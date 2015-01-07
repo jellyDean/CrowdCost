@@ -5,7 +5,7 @@ from .models import Greeting
 
 # Create your views here.
 def index(request):
-    return HttpResponse('Hello from Python THIS IS A HEROKO LOCAL HOST TEST!!!')
+    return HttpResponse('Hello from Python SAM AND DEAN ARE ONLINE')
 
 
 def db(request):
