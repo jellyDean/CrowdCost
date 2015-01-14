@@ -59,11 +59,55 @@ WSGI_APPLICATION = 'gettingstarted.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
+# DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#        'NAME': 'Crowdcost',
+#        'USER': 'fgyrteniejpmhg',
+#        'PASSWORD': 'V80eMoV3UOrHe-A4MFgZhIIgrw',
+#        'HOST': 'ec2-107-20-229-112.compute-1.amazonaws.com',
+#        'PORT': '5432',
+#    }
+# }
+
+#answer from stackoverflow
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'your_heroku_db_name',
+#         'USER': 'your_heroku_db_user_name',
+#         'PASSWORD': 'your_heroku_password',
+#         'HOST': 'ec2-23-21-133-106.compute-1.amazonaws.com', # Or something like this
+#         'PORT': '5432',
+#     }
+# }
+
+# localhost
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'Sam',
+#         'USERNAME': 'Sam',
+#         'HOST': '127.0.0.1',
+#         'PORT': '5432',
+#     }
+# }
+
 DATABASES = {
+     'default': {
+         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+         'NAME': 'Sam',
+         'USER': 'Sam',
+         'PASSWORD': 'password',
+         'HOST': 'localhost', # '127.0.0.1' probably works also
+         'PORT': '5432',
+     }
+ }
+
+CACHES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+   }
 }
 
 # Internationalization
@@ -87,7 +131,11 @@ STATIC_URL = '/static/'
 
 
 # Parse database configuration from $DATABASE_URL
-DATABASES['default'] =  dj_database_url.config()
+#DATABASES['default'] =  dj_database_url.config()
+
+if os.environ.get('DATABASE_URL', None):
+    import dj_database_url
+    DATABASES['default'] = dj_database_url.config()
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
