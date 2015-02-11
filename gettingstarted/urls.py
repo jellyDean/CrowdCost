@@ -1,6 +1,8 @@
 from django.conf.urls import patterns, include, url
-
+from django.conf.urls.static import static
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
+from gettingstarted import settings
 admin.autodiscover()
 
 import hello.views
@@ -11,7 +13,9 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^$', hello.views.index, name='index'),
-    url(r'^db', hello.views.db, name='db'),
+    url(r'^index/', hello.views.index, name='index'),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^search_results', hello.views.search_results, name='search_results'),
+) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-)
+urlpatterns += staticfiles_urlpatterns()

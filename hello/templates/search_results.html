@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+{% load i18n %}
+{% load static %}
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}scripts/jquery-1.11.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}scripts/map.js"></script>
+</head>
+<body>
+<style>
+    #map
+    {
+        height:500px;
+        width:600px;
+        margin-left: auto;
+        margin-right:auto;
+    }
+</style>
+
+
+<h2>Search Results</h2>
+<table data-toggle="table" data-url="data1.json" data-cache="false" data-height="299">
+    <thead>
+        <tr>
+            <th data-field="name">Name</th>
+            <th data-field="price">Price</th>
+            <th data-field="location">Location</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.1 }}</td>
+                <td>{{ user.4 }}</td>
+                <td>{{ user.5 }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<p>average: {% trans average %}</p>
+<p>user count: {% trans userCount %}</p>
+
+    <div id="map"></div>
+    <script type='text/javascript'>
+        var our_json_data = {{ obj_as_json|safe }};
+        layout_map(our_json_data);
+    </script>
+<a href="/index/">Back</a>
+</body>
+</html>

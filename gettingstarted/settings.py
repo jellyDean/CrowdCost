@@ -101,6 +101,9 @@ DATABASES = {
          'PASSWORD': 'password',
          'HOST': 'localhost', # '127.0.0.1' probably works also
          'PORT': '5432',
+         'OPTIONS': {
+            'options': '-c search_path=localtable'
+         }
      }
  }
 
@@ -145,9 +148,17 @@ ALLOWED_HOSTS = ['*']
 
 # Static asset configuration
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_ROOT = 'staticfiles'
+
+PROJECT_DIR = os.path.dirname(__file__)
+
+MEDIA_ROOT = os.path.join(PROJECT_DIR, 'media')
+
+MEDIA_URL = '/media/'
+
+STATIC_ROOT = os.path.join(PROJECT_DIR, '../hello/static')
+
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(PROJECT_DIR, 'staticfiles'),
 )

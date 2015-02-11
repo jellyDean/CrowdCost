@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<form name="search" action="/index/" method="post">
+    {% csrf_token %}
+    <select id="category" name="category">
+      <option value="CABLE">Cable</option>
+      <option value="PHONE">Phone</option>
+      <option value="WEDDINGS">Weddings</option>
+    </select>
+    <select id="provider" name="provider">
+      <option value="TWC">TWC</option>
+      <option value="VERIZON">Verizon</option>
+      <option value="weddings">Weddings</option>
+    </select>
+    <input id="name" type="text" name="name" placeholder="name"/>
+    <input id="zipcode" type="text" name="zipcode" placeholder="zipcode"/>
+    <input id="price" type="text" name="price" placeholder="price"/>
+<input type="submit" value="Submit"/>
+</form>
+
+</body>
+</html>
