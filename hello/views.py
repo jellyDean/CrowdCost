@@ -1,9 +1,10 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 import time, decimal, json
 from django.db import connection
+from django.core import serializers
 
-from .models import AnonUsers, Categories, Companies
+from .models import AnonUsers, Categories, Companies, US_Zipcodes
 from .forms import UserInput
 
 
@@ -48,8 +49,49 @@ def search_results(request):
     zipcode = str(request.session.get('zipcode', False))
     cursor = connection.cursor()
 
+    # Calculate the average for the user entered zipcode and category
+    total_cost = calculate_average(category, zipcode)
+
+    # fetch the lat and long of the current zipcode entered by the anonymous user
+    cursor.execute('SELECT * FROM localtable.us_zipcodes WHERE zip = %s', [zipcode])
+    entered_zipcode = cursor.fetchall()
+    my_state = entered_zipcode[0][2]
+    latitude = entered_zipcode[0][3]
+    longitude = entered_zipcode[0][4]
+
+    # Apply 'radius' formula to find zipcodes around our original point
+    upper_lat = latitude + decimal.Decimal(0.0085)
+    lower_lat = latitude - decimal.Decimal(0.15)
+
+    lower_long = longitude - decimal.Decimal(0.25)
+    upper_long = longitude + decimal.Decimal(0.055)
+
+    data = US_Zipcodes.objects.filter(lat__lt=upper_lat, lat__gt=lower_lat,
+                                                                    long__gt=lower_long, long__lt=upper_long,
+                                                                    state__exact=my_state)
+    locations = data
+    data = serializers.serialize("json", data)
+
+    # Calculate the averages of the surrounding zipcodes
+    zipcode_averages = []
+    for location in locations:
+        averages_dict = {'zip_average': str(format(calculate_average(category, location.zip), '.2f'))}
+        zipcode_averages.append(averages_dict)
+
+    radius_locations = zipcode_averages
+
+    return render(request, 'search_results.html', {'average': str(format(total_cost, '.2f')),
+
+                                                   'radius_locations': radius_locations,
+                                                   "obj_as_json": data})
+
+
+def calculate_average(category, zipcode):
+    cursor = connection.cursor()
+
     cursor.execute('SELECT * FROM localtable.anonymous_users '
-                                   'WHERE category_id = %s and anon_user_zipcode = %s', [category, zipcode])
+                                   'WHERE category_id = %s and anon_user_zipcode = %s',
+                   [category, str(zipcode.replace(" ", ""))])
     users = cursor.fetchall()
 
     total_cost = 0
@@ -57,31 +99,17 @@ def search_results(request):
     for user in users:
         total_cost += user[4]
         number_of_users += 1
-        print(user[4])
 
-    total_cost = total_cost / number_of_users
+    if number_of_users > 0:
+            total_cost = total_cost / number_of_users
 
-    # fetch the lat and long of the current zipcode entered by the anonymous user
-    cursor.execute('SELECT * FROM localtable.us_zipcodes WHERE zip = %s', [zipcode])
-    entered_zipcode = cursor.fetchall()
-    state = entered_zipcode[0][2]
-    latitude = entered_zipcode[0][3]
-    longitude = entered_zipcode[0][4]
+    else:
+            total_cost = 0
 
-    upper_lat = latitude + decimal.Decimal(0.0085)
-    lower_lat = latitude - decimal.Decimal(0.10)
 
-    lower_long = longitude - decimal.Decimal(0.25)
-    upper_long = longitude + decimal.Decimal(0.055)
+    print("total cost: " + str(total_cost))
 
-    cursor.execute('SELECT * FROM localtable.us_zipcodes '
-                   'WHERE (lat < %s and lat > %s) '
-                   'and (long > %s and long < %s) and state = %s;', [upper_lat, lower_lat, lower_long, upper_long, state])
-    radius_locations = cursor.fetchall()
-    return render(request, 'search_results.html', {'users': users, 'average': str(format(total_cost, '.2f')),
-                                                   'userCount': str(number_of_users),
-                                                   'radius_locations': radius_locations,
-                                                   "obj_as_json": json.dumps(radius_locations)})
+    return total_cost
 
 
 

@@ -35,13 +35,13 @@ class Categories(models.Model):
 class US_Zipcodes(models.Model):
     class Meta:
         db_table='us_zipcodes'
-        zip = models.CharField(db_column='zip', max_length=100)
-        city = models.CharField(db_column='city', max_length=100)
-        state = models.CharField(db_column='state', max_length=100)
-        lat = models.DecimalField(db_column='lat', decimal_places=10)
-        long = models.DecimalField(db_column='long', decimal_places=10)
-        timezone = models.IntegerField(db_column='timezone')
-        dst = models.CharField(db_column='dst', max_length=100)
+    zip = models.CharField(db_column='zip', max_length=100)
+    city = models.CharField(db_column='city', max_length=100)
+    state = models.CharField(db_column='state', max_length=100)
+    lat = models.DecimalField(db_column='lat', decimal_places=10,max_digits=18)
+    long = models.DecimalField(db_column='long', decimal_places=10,max_digits=18)
+    timezone = models.IntegerField(db_column='timezone')
+    dst = models.CharField(db_column='dst', max_length=100)
 
 
 

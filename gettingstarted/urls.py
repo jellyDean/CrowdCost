@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     url(r'^index/', hello.views.index, name='index'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^search_results', hello.views.search_results, name='search_results'),
+    url(r'^calculate_average/$', hello.views.search_results, name='calculate_average'),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()
