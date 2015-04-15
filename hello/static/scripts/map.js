@@ -72,18 +72,30 @@
                 '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
                 'Imagery © <a href="http://mapbox.com">Mapbox</a>',
             mbUrl = 'https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png';
-
+/*
         var grayscale   = L.tileLayer(mbUrl, {id: 'examples.map-20v6611k'}),
             streets  = L.tileLayer(mbUrl, {id: 'examples.map-i875mjb7'});
-
+            */
+        var streets = L.tileLayer(mbUrl, {id: 'examples.map-i875mjb7'});
+/*
         var map = L.map('map', {
             center: [latitude_points[0], longitude_points[0]],
             zoom: 10,
             layers: [grayscale, cities]
+        });*/
+
+        var map = L.map('map', {
+            center: [latitude_points[0], longitude_points[0]],
+            zoom: 10,
+            layers: [cities]
         });
 
-        var baseLayers = {
+       /* var baseLayers = {
             "Grayscale": grayscale,
+            "Streets": streets
+        };*/
+
+        var baseLayers = {
             "Streets": streets
         };
 
