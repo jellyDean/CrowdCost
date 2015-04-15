@@ -37,7 +37,8 @@
 
     function layout_map(json_data,zipcode_data)
     {
-        //console.log(json_data);
+        console.log(json_data);
+        console.log(zipcode_data);
         //var jsonData = JSON.parse(json_data);
         var latitude_points = [];
         var longitude_points = [];
