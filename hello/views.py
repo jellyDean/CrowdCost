@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
-import time, decimal, json
+import time, decimal, json, sys
 from django.db import connection
 from django.core import serializers
 
@@ -79,6 +79,9 @@ def search_results(request):
         zipcode_averages.append(averages_dict)
 
     radius_locations = zipcode_averages
+
+    print "radius locations: " + str(radius_locations) + " data: " + str(data) + " total cost: " + str(total_cost)
+    sys.stdout.flush()
 
     return render(request, 'search_results.html', {'average': str(format(total_cost, '.2f')),
 
