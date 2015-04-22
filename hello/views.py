@@ -57,9 +57,9 @@ def search_results(request):
     entered_zipcode = cursor.fetchall()
     print " entered_zipcode: " + str(entered_zipcode)
     sys.stdout.flush()
-    my_state = entered_zipcode[2]
-    latitude = entered_zipcode[3]
-    longitude = entered_zipcode[4]
+    my_state = entered_zipcode[0][2]
+    latitude = entered_zipcode[0][3]
+    longitude = entered_zipcode[0][4]
 
     # Apply 'radius' formula to find zipcodes around our original point
     upper_lat = latitude + decimal.Decimal(0.0085)
@@ -67,6 +67,9 @@ def search_results(request):
 
     lower_long = longitude - decimal.Decimal(0.25)
     upper_long = longitude + decimal.Decimal(0.055)
+
+    print "upper lat: " + str(upper_lat) + " lower lat: " + str(lower_lat) + " lower_long: " + str(lower_long) + " upper long: " + str(upper_long) + " my state: " + str(my_state)
+    sys.stdout.flush()
 
     data = US_Zipcodes.objects.filter(lat__lt=upper_lat, lat__gt=lower_lat,
                                                                     long__gt=lower_long, long__lt=upper_long,
