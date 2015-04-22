@@ -57,9 +57,9 @@ def search_results(request):
     entered_zipcode = cursor.fetchall()
     print " entered_zipcode: " + str(entered_zipcode)
     sys.stdout.flush()
-    my_state = entered_zipcode[0][2]
-    latitude = entered_zipcode[0][3]
-    longitude = entered_zipcode[0][4]
+    my_state = entered_zipcode[2]
+    latitude = entered_zipcode[3]
+    longitude = entered_zipcode[4]
 
     # Apply 'radius' formula to find zipcodes around our original point
     upper_lat = latitude + decimal.Decimal(0.0085)
