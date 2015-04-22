@@ -55,6 +55,8 @@ def search_results(request):
     # fetch the lat and long of the current zipcode entered by the anonymous user
     cursor.execute('SELECT * FROM localtable.us_zipcodes WHERE zip = %s', [zipcode])
     entered_zipcode = cursor.fetchall()
+    print " entered_zipcode: " + str(entered_zipcode)
+    sys.stdout.flush()
     my_state = entered_zipcode[0][2]
     latitude = entered_zipcode[0][3]
     longitude = entered_zipcode[0][4]
@@ -69,6 +71,9 @@ def search_results(request):
     data = US_Zipcodes.objects.filter(lat__lt=upper_lat, lat__gt=lower_lat,
                                                                     long__gt=lower_long, long__lt=upper_long,
                                                                     state__exact=my_state)
+    print " data1: " + str(data)
+    sys.stdout.flush()
+
     locations = data
     data = serializers.serialize("json", data)
 
@@ -80,7 +85,7 @@ def search_results(request):
 
     radius_locations = zipcode_averages
 
-    print "radius locations: " + str(radius_locations) + " data: " + str(data) + " total cost: " + str(total_cost)
+    print "radius locations: " + str(radius_locations) + " data2: " + str(data) + " total cost: " + str(total_cost)
     sys.stdout.flush()
 
     return render(request, 'search_results.html', {'average': str(format(total_cost, '.2f')),
