@@ -74,7 +74,9 @@ def search_results(request):
     data = US_Zipcodes.objects.filter(lat__lt=upper_lat, lat__gt=lower_lat,
                                                                     long__gt=lower_long, long__lt=upper_long,
                                                                     state__exact=my_state)
-    print " data1: " + str(data)
+    mytest = US_Zipcodes.objects.filter(state__exact=my_state)
+
+    print " data1: " + str(data) + " mytest: " + str(mytest)
     sys.stdout.flush()
 
     locations = data

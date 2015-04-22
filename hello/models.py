@@ -34,7 +34,7 @@ class Categories(models.Model):
 
 class US_Zipcodes(models.Model):
     class Meta:
-        db_table='localtable.us_zipcodes'
+        db_table='us_zipcodes'
     zip = models.CharField(db_column='zip', max_length=100)
     city = models.CharField(db_column='city', max_length=100)
     state = models.CharField(db_column='state', max_length=100)
