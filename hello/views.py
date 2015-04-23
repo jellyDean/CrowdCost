@@ -74,7 +74,9 @@ def search_results(request):
     data = US_Zipcodes.objects.filter(lat__lt=upper_lat, lat__gt=lower_lat,
                                                                     long__gt=lower_long, long__lt=upper_long,
                                                                     state__exact=my_state)
-    mytest = US_Zipcodes.objects.filter(state__exact=my_state)
+    cursor.execute('SELECT * FROM localtable.us_zipcodes WHERE lat < %s '
+                   'and lat > %s and long > %s and long < %s and state = %s', [upper_lat, lower_lat, lower_long, upper_long, my_state])
+    mytest = cursor.fetchall()
 
     print " data1: " + str(data) + " mytest: " + str(mytest)
     sys.stdout.flush()
