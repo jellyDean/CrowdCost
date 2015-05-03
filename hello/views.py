@@ -27,6 +27,9 @@ def index(request):
 
             # process the data in form.cleaned_data as required
             # redirect to a new page
+            sql =  "INSERT INTO localtable.anonymous_users (name, company_id, category_id, anon_user_cost, anon_user_zipcode, anon_user_timestamp) VALUES (%s,%s,%s,%s,%s,%s)"
+            cursor.execute(sql, (request.POST["name"],companyId[0][0],categoryId[0][0],request.POST["price"],request.POST["zipcode"],time.strftime('%Y-%m-%d %H:%M:%S')))
+
             new_user = AnonUsers(name=request.POST["name"],company_id=companyId[0][0],category_id=categoryId[0][0],anon_user_cost=request.POST["price"],
                                  anon_user_zipcode=request.POST["zipcode"], anon_user_timestamp=time.strftime('%Y-%m-%d %H:%M:%S'))
             new_user.save()
