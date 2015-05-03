@@ -49,9 +49,8 @@
 
     <div id="map"></div>
     <script type='text/javascript'>
-        var our_json_data = {{ obj_as_json|safe }};
-        var zipcode_json = {{ radius_locations|safe }}
-        layout_map(our_json_data,zipcode_json);
+        //layout_map(JSON.parse({{ obj_as_json|safe }}),{{ radius_locations|safe }});
+        layout_map({{ obj_as_json|safe }},{{ radius_locations|safe }});
     </script>
 <a href="/index/">Back</a>
 </body>

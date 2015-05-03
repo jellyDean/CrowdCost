@@ -37,32 +37,45 @@
 
     function layout_map(json_data,zipcode_data)
     {
-        console.log(json_data);
-        console.log(zipcode_data);
+
+        //console.log(json_data);
+        //console.log(zipcode_data);
         //var jsonData = JSON.parse(json_data);
         var latitude_points = [];
         var longitude_points = [];
         var city_points = [];
         var zipcode_points = [];
         var average_points = [];
-        for (var i = 0; i < json_data.length; i++) {
-            var first_json_parse = json_data[i];
-            var second_json_parse = zipcode_data[i];
-            //console.log(first_json_parse);
-            latitude_points.push(first_json_parse.fields.lat);
-            longitude_points.push(first_json_parse.fields.long);
-            city_points.push(first_json_parse.fields.city);
-            zipcode_points.push(first_json_parse.fields.zip);
-            average_points.push(second_json_parse.zip_average);
-        }
 
+
+        for (var key in json_data)
+        {
+            if (json_data.hasOwnProperty(key))
+            {
+                if (key == 'lat')
+                {
+                    latitude_points.push(json_data[key]);
+                }
+                if (key == 'long')
+                {
+                    longitude_points.push(json_data[key]);
+                }
+                if (key == 'city')
+                {
+                    city_points.push(json_data[key]);
+                }
+                if (key == 'zip')
+                {
+                    zipcode_points.push(json_data[key]);
+                }
+            }
+        }
         var cities = new L.LayerGroup();
-        for (var p = 0; p < latitude_points.length; p++){
-            L.marker([latitude_points[p], longitude_points[p]]
-            ).bindPopup(city_points[p].toString() + ' has an average of '
-                 + average_points[p].toString()).addTo(cities);
+        for (var p = 0; p < latitude_points[0].length; p++){
+            L.marker([latitude_points[0][p], longitude_points[0][p]]
+            ).bindPopup(city_points[0][p].toString() + ' has an average of '
+                 + zipcode_data[p].toString()).addTo(cities);
         }
-
         //L.marker([39.61, -105.02]).bindPopup('This is Littleton, CO.').addTo(cities),
         //L.marker([39.74, -104.99]).bindPopup('This is Denver, CO.').addTo(cities),
         //L.marker([39.73, -104.8]).bindPopup('This is Aurora, CO.').addTo(cities),
@@ -73,33 +86,32 @@
                 '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
                 'Imagery © <a href="http://mapbox.com">Mapbox</a>',
             mbUrl = 'https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png';
-/*
-        var grayscale   = L.tileLayer(mbUrl, {id: 'examples.map-20v6611k'}),
-            streets  = L.tileLayer(mbUrl, {id: 'examples.map-i875mjb7'});
-            */
-        var streets = L.tileLayer(mbUrl, {id: 'examples.map-i875mjb7'});
-/*
-        var map = L.map('map', {
-            center: [latitude_points[0], longitude_points[0]],
-            zoom: 10,
-            layers: [grayscale, cities]
-        });*/
+
+        var streets  = L.tileLayer(mbUrl, {id: 'examples.map-i875mjb7'}),
+            grayscale   = L.tileLayer(mbUrl, {id: 'examples.map-20v6611k'});
+
+       // var streets = L.tileLayer(mbUrl, {id: 'examples.map-i875mjb7'});
 
         var map = L.map('map', {
-            center: [latitude_points[0], longitude_points[0]],
+            center: [latitude_points[0][0], longitude_points[0][0]],
+            zoom: 11,
+            layers: [streets, cities]
+        });
+        /*
+        var map = L.map('map', {
+            center: [latitude_points[0][0], longitude_points[0][0]],
             zoom: 10,
             layers: [cities]
-        });
+        });*/
+        var baseLayers = {
+            "Streets": streets,
+            "Grayscale": grayscale
 
-       /* var baseLayers = {
-            "Grayscale": grayscale,
-            "Streets": streets
-        };*/
-
+        };
+/*
         var baseLayers = {
             "Streets": streets
-        };
-
+        };*/
         var overlays = {
             "Cities": cities
         };

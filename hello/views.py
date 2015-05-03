@@ -71,29 +71,42 @@ def search_results(request):
     print "upper lat: " + str(upper_lat) + " lower lat: " + str(lower_lat) + " lower_long: " + str(lower_long) + " upper long: " + str(upper_long) + " my state: " + str(my_state)
     sys.stdout.flush()
 
-    data = US_Zipcodes.objects.filter(lat__lt=upper_lat, lat__gt=lower_lat,
-                                                                    long__gt=lower_long, long__lt=upper_long,
-                                                                    state__exact=my_state)
+    # data = US_Zipcodes.objects.filter(lat__lt=upper_lat, lat__gt=lower_lat,
+    #                                                                 long__gt=lower_long, long__lt=upper_long,
+    #                                                                 state__exact=my_state)
     cursor.execute('SELECT * FROM localtable.us_zipcodes WHERE lat < %s '
                    'and lat > %s and long > %s and long < %s and state = %s', [upper_lat, lower_lat, lower_long, upper_long, my_state])
-    mytest = cursor.fetchall()
+    data = cursor.fetchall()
 
-    print " data1: " + str(data) + " mytest: " + str(mytest)
+    print " data1: " + str(data)
     sys.stdout.flush()
 
-    locations = data
-    data = serializers.serialize("json", data)
+
+    # turn the tuple into json
+
+    data = {"zip"  : [x[0] for x in data],
+            "city"      : [x[1] for x in data],
+            "state"     : [x[2] for x in data],
+            "lat"       : [str(x[3]) for x in data],
+            "long"      : [str(x[4]) for x in data],
+            "timezone"  : [x[5] for x in data],
+            "dst"       : [x[6] for x in data],
+            "id"        : [x[7] for x in data]}
+
+
+
 
     # Calculate the averages of the surrounding zipcodes
-    zipcode_averages = []
-    for location in locations:
-        averages_dict = {'zip_average': str(format(calculate_average(category, location.zip), '.2f'))}
-        zipcode_averages.append(averages_dict)
+    radius_locations = []
+    for zipcode in data['zip']:
+        radius_locations.append(str(format(calculate_average(category, zipcode), '.2f')))
+        #zipcode_averages.append(averages_dict)
 
-    radius_locations = zipcode_averages
+    #radius_locations = zipcode_averages
 
     print "radius locations: " + str(radius_locations) + " data2: " + str(data) + " total cost: " + str(total_cost)
     sys.stdout.flush()
+    data = json.dumps(data)
 
     return render(request, 'search_results.html', {'average': str(format(total_cost, '.2f')),
 
